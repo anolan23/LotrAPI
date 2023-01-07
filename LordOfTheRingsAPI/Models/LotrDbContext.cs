@@ -5,7 +5,12 @@ namespace LordOfTheRingsAPI.Models
 {
 	public class LotrDbContext: DbContext
 	{
-        public DbSet<Character> characters { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=Lotr;User Id=aaron;Password=095458;\n");
+        }
+
+        public DbSet<Character> Characters { get; set; }
     }
 }
 

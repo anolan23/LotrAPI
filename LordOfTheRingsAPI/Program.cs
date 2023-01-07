@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<LotrDbContext>(options => options.UseSqlServer());
+//builder.Services.AddDbContext<LotrDbContext>(options => options.UseNpgsql("Server=localhost;Port=5432;Database=Lotr;User Id=aaron;Password=095458;\n"));
 
 var app = builder.Build();
 
