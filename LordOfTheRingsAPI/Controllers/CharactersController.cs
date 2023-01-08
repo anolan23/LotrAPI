@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LordOfTheRingsAPI.Models;
+using LordOfTheRingsAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LordOfTheRingsAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/characters")]
     public class CharactersController : Controller
     {
 
@@ -27,7 +28,7 @@ namespace LordOfTheRingsAPI.Controllers
         {
             using var context = new LotrDbContext();
             var character = context.Characters.Find(id);
-            if (character != null)
+            if (character == null)
             {
                 return NotFound();
             }
@@ -35,9 +36,10 @@ namespace LordOfTheRingsAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Character character)
+        public IActionResult Create(CharacterViewModel viewModel)
         {
             try {
+                Character character = new Character { Name = viewModel.Name, Race = viewModel.Race, Gender = viewModel.Gender };
                 using var context = new LotrDbContext();
                 context.Characters.Add(character);
                 context.SaveChanges();
@@ -45,6 +47,28 @@ namespace LordOfTheRingsAPI.Controllers
         
             }
             catch(Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                using var context = new LotrDbContext();
+                var character = await context.Characters.FindAsync(id);
+                if(character == null)
+                {
+                    return NotFound();
+                }
+                context.Characters.Remove(character);
+                context.SaveChanges();
+                return Ok();
+
+            }
+            catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
